@@ -5,6 +5,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,4 +25,28 @@ public class EmployeeDAOJpaImpl implements EmployeeDAO{
         TypedQuery<Employee> employeeQuery = entityManager.createQuery("FROM Employee",Employee.class);
         return employeeQuery.getResultList();
     }
+
+    @Override
+    public Employee findById(int id) {
+        return entityManager.find(Employee.class, id);
+    }
+
+    @Override
+    public void addEmployee(Employee employee) {
+        entityManager.persist(employee);
+    }
+
+    @Override
+    public Employee updateEmployee(Employee employee) {
+        Employee dbEmployee =  entityManager.merge(employee);
+        return dbEmployee;
+    }
+
+    @Override
+    public void deleteEmployee(int id) {
+        Employee theEmployee = entityManager.find(Employee.class, id);
+        entityManager.remove(theEmployee);
+    }
+
+
 }
