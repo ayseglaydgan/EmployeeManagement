@@ -1,53 +1,49 @@
 package com.employeemanagement.springboot.employeemanagement.service;
 
-import com.employeemanagement.springboot.employeemanagement.dao.EmployeeDAO;
+import com.employeemanagement.springboot.employeemanagement.dao.EmployeeRepository;
 import com.employeemanagement.springboot.employeemanagement.entity.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService{
 
-    private EmployeeDAO employeeDAO;
+    private EmployeeRepository employeeRepository;
 
-    @Autowired
-    public EmployeeServiceImpl(EmployeeDAO theEmployeeDAO) {
-        this.employeeDAO = theEmployeeDAO;
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
+        this.employeeRepository = employeeRepository;
     }
 
     @Override
     public List<Employee> findAll() {
-        return employeeDAO.findAll();
+        return employeeRepository.findAll();
     }
 
     @Override
-    public Employee findById(int id)
-    {
-        return employeeDAO.findById(id);
+    public Employee findById(int id) {
+        Optional<Employee> result =  employeeRepository.findById(id);
+        Employee employee = null;
+        if(result.isPresent())
+        {
+            employee = result.get();
+        }
+        else {
+            throw new RuntimeException("Didnt find.");
+        }
+        return employee;
     }
 
-    @Transactional
     @Override
     public Employee saveEmployee(Employee employee) {
-        return employeeDAO.saveEmployee(employee);
+        return employeeRepository.save(employee);
     }
 
-    @Transactional
     @Override
-    public String deleteEmployee(int id) {
-
-        Employee theEmployee = employeeDAO.findById(id);
-        if(theEmployee == null)
-        {
-            throw new RuntimeException("Employee id not found -" + id);
-        }
-
-        employeeDAO.deleteEmployee(id);
-        return "Deleted employee id -" + id;
+    public void deleteEmployee(int id) {
+        employeeRepository.deleteById(id);
     }
-
-
 }

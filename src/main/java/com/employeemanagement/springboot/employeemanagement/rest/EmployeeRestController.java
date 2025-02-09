@@ -1,6 +1,5 @@
 package com.employeemanagement.springboot.employeemanagement.rest;
 
-import com.employeemanagement.springboot.employeemanagement.dao.EmployeeDAO;
 import com.employeemanagement.springboot.employeemanagement.entity.Employee;
 import com.employeemanagement.springboot.employeemanagement.service.EmployeeService;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +22,6 @@ public class EmployeeRestController {
     @GetMapping("/employees")
     public List<Employee> getEmployees()
     {
-
         return employeeService.findAll();
     }
 
@@ -56,7 +54,16 @@ public class EmployeeRestController {
     @DeleteMapping("/employees/{employeeId}")
     public String deleteEmployee(@PathVariable int employeeId)
     {
-        return employeeService.deleteEmployee(employeeId);
+        Employee employee = employeeService.findById(employeeId);
+
+        if(employee == null)
+        {
+            throw new RuntimeException("Employee doesnot exist.");
+        }
+
+        employeeService.deleteEmployee(employeeId);
+
+        return "Deleted employee success";
 
     }
 }
