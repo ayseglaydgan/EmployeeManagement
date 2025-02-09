@@ -31,13 +31,9 @@ public class EmployeeDAOJpaImpl implements EmployeeDAO{
         return entityManager.find(Employee.class, id);
     }
 
-    @Override
-    public void addEmployee(Employee employee) {
-        entityManager.persist(employee);
-    }
 
     @Override
-    public Employee updateEmployee(Employee employee) {
+    public Employee saveEmployee(Employee employee) {
         Employee dbEmployee =  entityManager.merge(employee);
         return dbEmployee;
     }
